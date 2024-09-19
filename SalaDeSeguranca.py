@@ -1,26 +1,26 @@
-#import RPi.GPIO as GPIO
-#from mfrc522 import SimpleMFRC522
+import RPi.GPIO as GPIO
+from mfrc522 import SimpleMFRC522
 import time
 import csv
 from datetime import datetime
 
-#leitorRFid = SimpleMFRC522()
-usuarios = {837196207282: "Fulano" , 11: "Beltrano",  10:"Ciclano"}
+leitorRFid = SimpleMFRC522()
+usuarios = {837196207282: "Fulano" , 11 : "Beltrano",  634156810886:"Ciclano"}
 usuarios_autorizados = {837196207282: "Fulano" , 11: "Beltrano"}
 acesso_diario = {}
 tempo_entrada = {}
 numero_tentativas = {}
-#634156810886
+
 led_verde = 5
 led_vermelho = 3
 buzzer = 37
 entrada = False
 tentativas_invasao = 0
 
-#GPIO.setmode(GPIO.BOARD)
-#GPIO.setup(led_verde, GPIO.OUT)
-#GPIO.setup(led_vermelho, GPIO.OUT)
-#GPIO.setup(buzzer, GPIO.OUT)
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(led_verde, GPIO.OUT)
+GPIO.setup(led_vermelho, GPIO.OUT)
+GPIO.setup(buzzer, GPIO.OUT)
 
 
 
@@ -35,7 +35,7 @@ def verificar_tag(tag):
                 entrada = True
                 ligar_leds("verde", invasao=False)
                 novo_log(tag, {usuarios[tag]}, "Usuário autorizado","Entrada",None)
-                #if tag not in tempo_entrada:
+                
                 tempo_entrada[tag] = datetime.now()
                 print(tempo_entrada)
             elif entrada == True:
@@ -43,7 +43,7 @@ def verificar_tag(tag):
                 tempo_inicial = tempo_entrada[tag]
                 tempo_atual = datetime.now()
                 tempo_na_sala = tempo_atual - tempo_inicial
-                #tempo_na_sala = datetime.now() - tempo_entrada.pop(tag)
+                
                 entrada = False
                 print(tempo_na_sala)
                 novo_log(tag, {usuarios[tag]}, "Usuário autorizado", "Saida", tempo_na_sala)
@@ -57,7 +57,7 @@ def verificar_tag(tag):
         print(f"Você não tem acesso a este projeto, {usuarios[tag]}" )
         
         ligar_leds("vermelho", invasao=False)
-        #novo_log(tag, {usuarios[tag]}, "Usuário não autorizado",None,None)
+        
         if tag not in numero_tentativas:
             numero_tentativas[tag] = (usuarios[tag], 1)
         else:
@@ -78,36 +78,36 @@ def verificar_tag(tag):
 
 def ligar_leds(led, invasao):
     if led == "verde":
-        #GPIO.output(37, GPIO.HIGH)
-        #time.sleep(1)
-        #GPIO.output(37, GPIO.LOW)
+        GPIO.output(37, GPIO.HIGH)
+        time.sleep(1)
+        GPIO.output(37, GPIO.LOW)
         for i in range(5):
-                #GPIO.output(5, GPIO.HIGH)
-                print("LED ligado")
+                GPIO.output(5, GPIO.HIGH)
+                #print("LED ligado")
                 time.sleep(1)
-                #GPIO.output(5, GPIO.LOW)                
-                print("LED desligado")
+                GPIO.output(5, GPIO.LOW)                
+                #print("LED desligado")
                 time.sleep(1)
     elif led == "vermelho" and invasao == False:
         for i in range(5):
-                #GPIO.output(3, GPIO.HIGH)
-                #GPIO.output(37, GPIO.HIGH)
-                print("LED ligado")
+                GPIO.output(3, GPIO.HIGH)
+                GPIO.output(37, GPIO.HIGH)
+                #print("LED ligado")
                 time.sleep(1)
-                #GPIO.output(3, GPIO.LOW)
-                #GPIO.output(37, GPIO.LOW)
-                print("LED desligado")
+                GPIO.output(3, GPIO.LOW)
+                GPIO.output(37, GPIO.LOW)
+                #print("LED desligado")
                 time.sleep(1)
     elif led == "vermelho" and invasao == True:
         for i in range(2):
-            #GPIO.output(3, GPIO.HIGH)
-            #GPIO.output(37, GPIO.HIGH)
-            print("LED ligado")
+            GPIO.output(3, GPIO.HIGH)
+            GPIO.output(37, GPIO.HIGH)
+            #print("LED ligado")
             time.sleep(1)
-            #GPIO.output(3, GPIO.LOW)
-            print("LED desligado")
+            GPIO.output(3, GPIO.LOW)
+            #print("LED desligado")
             time.sleep(1)
-    #GPIO.output(37, GPIO.LOW)
+    GPIO.output(37, GPIO.LOW)
 
 def novo_log(log, usuario, autorizacao, entrada_saida, tempo):
     with open('logs.csv', mode='a', newline='') as arquivo_csv:
@@ -119,16 +119,16 @@ def novo_log(log, usuario, autorizacao, entrada_saida, tempo):
 
 while True:
     try: 
-        #GPIO.output(5, GPIO.LOW)
-        #GPIO.output(3, GPIO.LOW)
+        GPIO.output(5, GPIO.LOW)
+        GPIO.output(3, GPIO.LOW)
         print(tentativas_invasao)
         print("Aguardando leitura da tag")
-        #tag, text = leitorRFid.read()
+        tag, text = leitorRFid.read()
         #print(f"ID do cartão: {tag}")
         #print(f"Texto: {text}")
         print(entrada)
         print(numero_tentativas)
-        tag = int(input("Digite o ID do usuário: "))
+        #tag = int(input("Digite o ID do usuário: "))
         verificar_tag(tag)
 
 
