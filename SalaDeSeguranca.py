@@ -99,7 +99,7 @@ def ligar_leds(led, invasao):
                 #print("LED desligado")
                 time.sleep(1)
     elif led == "vermelho" and invasao == True:
-        for i in range(2):
+        for i in range(10):
             GPIO.output(3, GPIO.HIGH)
             GPIO.output(37, GPIO.HIGH)
             #print("LED ligado")
